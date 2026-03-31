@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Restaurant Images</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #e84a3f;
+        }
+        .instructions {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .button-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        button {
+            padding: 12px;
+            background: #e84a3f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #d43a31;
+        }
+        #images-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .image-item {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        canvas {
+            max-width: 100%;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .image-item p {
+            margin: 10px 0 5px 0;
+            font-weight: bold;
+        }
+        .download-btn {
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+        .success {
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🍽️ Restaurant Image Generator</h1>
+    
+    <div class="instructions">
+        <h2>How to Use:</h2>
+        <ol>
+            <li>Click "Generate All Images" button below</li>
+            <li>All 10 restaurant images will be downloaded automatically</li>
+            <li>Save them in the same folder as your <code>index.html</code> file</li>
+            <li>The images folder names will be: <code>pizza.jpg</code>, <code>burger.jpg</code>, etc.</li>
+        </ol>
+    </div>
+
+    <button onclick="generateAllImages()" style="width: 100%; padding: 15px; font-size: 16px;">
+        📥 Generate & Download All Images
+    </button>
+
+    <div id="images-container"></div>
+    <div id="status"></div>
+</div>
+
+<script>
+function generateImage(type, width = 300, height = 200) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, height);
+    
+    switch(type) {
+        case 'pizza':
+            gradient.addColorStop(0, '#e8d4b0');
+            gradient.addColorStop(1, '#d4a574');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            ctx.fillStyle = '#ff6b35';
+            ctx.beginPath();
+            ctx.moveTo(150, 40);
+            ctx.lineTo(250, 180);
+            ctx.lineTo(50, 180);
+            ctx.closePath();
+            ctx.fill();
+            
+            ctx.fillStyle = '#ffdb58';
+            ctx.fillRect(120, 100, 20, 20);
+            ctx.fillRect(160, 120, 15, 15);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(140, 110, 18, 18);
+            ctx.fillStyle = '#ff0000';
+            ctx.fillRect(180, 100, 12, 12);
+            break;
+            
+        case 'burger':
+            gradient.addColorStop(0, '#f0e68c');
+            gradient.addColorStop(1, '#daa520');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            ctx.fillStyle = '#d4a574';
+            ctx.beginPath();
+            ctx.ellipse(150, 160, 60, 25, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#8b4513';
+            ctx.fillRect(100, 130, 100, 20);
+            
+            ctx.fillStyle = '#ffcc00';
+            ctx.fillRect(105, 120, 90, 12);
+            
+            ctx.fillStyle = '#228b22';
+            ctx.fillRect(105, 110, 90, 10);
+            
+            ctx.fillStyle = '#d4a574';
+            ctx.beginPath();
+            ctx.ellipse(150, 95, 60, 25, 0, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+            
+        case 'dosa':
+            gradient.addColorStop(0, '#daa520');
+            gradient.addColorStop(1, '#cd853f');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            ctx.fillStyle = '#d4a574';
+            ctx.beginPath();
+            ctx.ellipse(150, 110, 90, 50, -0.3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#228b22';
+            ctx.beginPath();
+            ctx.ellipse(120, 130, 40, 20, 0, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+            
+        case 'biryani':
+            gradient.addColorStop(0, '#cd853f');
+            gradient.addColorStop(1, '#8b4513');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            ctx.fillStyle = '#d4a574';
+            ctx.beginPath();
+            ctx.ellipse(150, 120, 80, 50, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#cd853f';
+            for(let i = 0; i < 30; i++) {
+                ctx.fillRect(100 + Math.random() * 100, 80 + Math.random() * 80, 3, 3);
+            }
+            
+            ctx.fillStyle = '#228b22';
+            ctx.fillRect(100, 70, 100, 8);
+            break;
+            
+        case 'noodles':
+            gradient.addColorStop(0, '#ffffe0');
+            gradient.addColorStop(1, '#ffd700');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            ctx.fillStyle = '#fff8dc';
+            ctx.beginPath();
+            ctx.ellipse(150, 120, 70, 50, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            ctx.strokeStyle = '#ffcc00';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.quadraticCurveTo(100, 90, 150, 110);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.quadraticCurveTo(150, 80, 180, 105);
+            ctx.stroke();
+            break;
+            
+        case 'sushi':
+            gradient.addColorStop(0, '#f5f5dc');
+            gradient.addColorStop(1, '#dcdcdc');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            const colors = ['#ffffff', '#ffdb58', '#228b22', '#ff6347'];
+            for(let i = 0; i < 4; i++) {
+                ctx.fillStyle = colors[i];
+                ctx.fillRect(50 + i * 50, 80, 35, 60);
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(50 + i * 50, 80, 35, 60);
+            }
+            
+            ctx.fillStyle = '#228b22';
+            ctx.beginPath();
+            ctx.ellipse(70, 160, 25, 15, 0, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+            
+        case 'cake':
+            gradient.addColorStop(0, '#f5deb3');
+            gradient.addColorStop(1, '#daa520');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            ctx.fillStyle = '#8b4513';
+            ctx.fillRect(80, 100, 140, 40);
+            ctx.fillStyle = '#a0522d';
+            ctx.fillRect(80, 70, 140, 35);
+            ctx.fillStyle = '#cd853f';
+            ctx.fillRect(80, 40, 140, 35);
+            
+            ctx.fillStyle = '#ffb6c1';
+            ctx.fillRect(75, 35, 150, 15);
+            
+            ctx.fillStyle = '#ffcc00';
+            ctx.fillRect(145, 15, 10, 25);
+            ctx.fillStyle = '#ff6347';
+            ctx.beginPath();
+            ctx.moveTo(150, 15);
+            ctx.lineTo(145, 5);
+            ctx.lineTo(155, 5);
+            ctx.closePath();
+            ctx.fill();
+            break;
+            
+        case 'thai':
+            gradient.addColorStop(0, '#ffa07a');
+            gradient.addColorStop(1, '#ff6347');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            ctx.fillStyle = '#ff6347';
+            ctx.beginPath();
+            ctx.ellipse(150, 120, 70, 50, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#228b22';
+            ctx.fillRect(110, 90, 15, 20);
+            ctx.fillRect(180, 100, 15, 20);
+            ctx.fillStyle = '#ffcc00';
+            ctx.fillRect(140, 110, 12, 18);
+            break;
+            
+        case 'bbq':
+            gradient.addColorStop(0, '#2f4f4f');
+            gradient.addColorStop(1, '#1c1c1c');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            ctx.fillStyle = '#8b4513';
+            ctx.fillRect(80, 70, 50, 60);
+            ctx.fillRect(150, 75, 50, 55);
+            ctx.fillStyle = '#a0522d';
+            ctx.fillRect(85, 75, 40, 50);
+            ctx.fillRect(155, 80, 40, 45);
+            
+            ctx.strokeStyle = '#ff6347';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(85, 100);
+            ctx.lineTo(125, 100);
+            ctx.stroke();
+            break;
+            
+        case 'veggies':
+            gradient.addColorStop(0, '#90ee90');
+            gradient.addColorStop(1, '#7cfc00');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            ctx.fillStyle = '#ff0000';
+            ctx.beginPath();
+            ctx.ellipse(90, 90, 35, 35, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#ffd700';
+            ctx.beginPath();
+            ctx.ellipse(150, 100, 30, 35, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#228b22';
+            ctx.beginPath();
+            ctx.ellipse(120, 140, 40, 25, 0, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+    }
+    
+    return canvas;
+}
+
+function downloadImage(canvas, filename) {
+    const link = document.createElement('a');
+    link.href = canvas.toDataURL('image/jpeg', 0.9);
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function generateAllImages() {
+    const images = [
+        { name: 'pizza', label: '🍕 Mario\'s Pizza' },
+        { name: 'burger', label: '🍔 Burger Paradise' },
+        { name: 'dosa', label: '🥘 South Indian Delights' },
+        { name: 'noodles', label: '🍜 Dragon Wok' },
+        { name: 'biryani', label: '🍛 Tandoori Tales' },
+        { name: 'cake', label: '🎂 Theos' },
+        { name: 'sushi', label: '🍱 Sushi Paradise' },
+        { name: 'veggies', label: '🥗 Veggie Haven' },
+        { name: 'thai', label: '🌶️ Spice Route' },
+        { name: 'bbq', label: '🍖 BBQ Corner' }
+    ];
+
+    const container = document.getElementById('images-container');
+    container.innerHTML = '';
+
+    images.forEach(img => {
+        const canvas = generateImage(img.name);
+        
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'image-item';
+        
+        const clonedCanvas = canvas.cloneNode(true);
+        itemDiv.appendChild(clonedCanvas);
+        
+        const label = document.createElement('p');
+        label.textContent = img.label;
+        itemDiv.appendChild(label);
+        
+        const btn = document.createElement('button');
+        btn.className = 'download-btn';
+        btn.textContent = 'Download';
+        btn.onclick = () => downloadImage(canvas, img.name + '.jpg');
+        itemDiv.appendChild(btn);
+        
+        container.appendChild(itemDiv);
+    });
+
+    // Auto-download all with delay
+    let delay = 500;
+    images.forEach(img => {
+        setTimeout(() => {
+            const canvas = generateImage(img.name);
+            downloadImage(canvas, img.name + '.jpg');
+        }, delay);
+        delay += 300;
+    });
+
+    const status = document.getElementById('status');
+    status.className = 'success';
+    status.textContent = '✅ Starting downloads... Check your Downloads folder! Save all images in the same folder as index.html';
+}
+</script>
+</body>
+</html>

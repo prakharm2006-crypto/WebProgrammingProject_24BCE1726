@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Express - Food Delivery</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+<!--  LANDING PAGE  -->
+<div id="landingPage" class="landing-page">
+    <div class="landing-container">
+        <div class="landing-content">
+            <h1 class="landing-title">Food Express</h1>
+            <p class="landing-tagline">Order your favorite food online</p>
+            <p class="landing-description">Fast & fresh food delivery at your doorstep</p>
+            <div class="landing-buttons">
+                <button class="landing-btn get-started" onclick="authManager.goToAuth('signup')">Get Started</button>
+                <button class="landing-btn login-btn" onclick="authManager.goToAuth('login')">Login</button>
+            </div>
+        </div>
+        <div class="landing-image">
+            🍕
+        </div>
+    </div>
+</div>
+
+<!--  AUTH PAGES  -->
+<!-- LOGIN PAGE -->
+<div id="loginPage" class="auth-page hidden">
+    <div class="auth-container">
+        <div class="auth-food-section">
+            <div class="food-display">🍕🍔🍜</div>
+            <h3>Welcome Back!</h3>
+            <p>Login to order your favorite meals</p>
+        </div>
+        <div class="auth-box">
+            <button class="back-btn" onclick="authManager.goBack()">← Back</button>
+            <h1>Food Express</h1>
+            <p class="tagline">Order your favorite food online</p>
+            <form onsubmit="authManager.handleLogin(event)">
+                <h2>Login</h2>
+                <input type="email" id="loginEmail" placeholder="Email" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <button type="submit">Login</button>
+                <p>Don't have account? <a onclick="authManager.toggleAuth()">Sign Up</a></p>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- SIGNUP PAGE -->
+<div id="signupPage" class="auth-page hidden">
+    <div class="auth-container">
+        <div class="auth-food-section">
+            <div class="food-display">🍱🍛🍲</div>
+            <h3>Join Us Today!</h3>
+            <p>Sign up to get delicious food delivered</p>
+        </div>
+        <div class="auth-box">
+            <button class="back-btn" onclick="authManager.goBack()">← Back</button>
+            <h1>Food Express</h1>
+            <p class="tagline">Create your account</p>
+            <form onsubmit="authManager.handleSignup(event)">
+                <h2>Sign Up</h2>
+                <input type="text" id="signupName" placeholder="Full Name" required>
+                <input type="email" id="signupEmail" placeholder="Email" required>
+                <input type="tel" id="signupPhone" placeholder="Phone" maxlength="10" required>
+                <input type="password" id="signupPassword" placeholder="Password" minlength="8" required>
+                <button type="submit">Sign Up</button>
+                <p>Already have account? <a onclick="authManager.toggleAuth()">Login</a></p>
+            </form>
+        </div>
+    </div>
+</div>
+<!--  MAIN APP  -->
+<div id="mainApp" class="hidden">
+    <!-- HEADER / NAVIGATION -->
+    <header class="header">
+        <div class="header-container">
+            <!-- Logo -->
+            <div class="header-left">
+                <h1 class="logo">Food Express</h1>
+            </div>
+            <!-- Search Bar -->
+            <div class="header-center">
+                <div class="search-container">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        class="search-bar" 
+                        placeholder="Search restaurants or cuisines..."
+                    >
+                    <button class="search-btn">🔍</button>
+                </div>
+            </div>
+            <!-- Right Section: Location + Cart + User -->
+            <div class="header-right">
+                <!-- Cart Icon -->
+                <div class="cart-icon-wrapper">
+                    <button class="cart-icon-btn" onclick="cartSystemManager.toggleCartPanel()">
+                        🛒
+                        <span class="cart-badge" id="cartBadge">0</span>
+                    </button>
+                </div>
+                <!-- User Menu -->
+                <div class="user-menu">
+                    <button class="user-btn" onclick="navigationManager.toggleUserMenu()">
+                        👤 <span id="userName">User</span>
+                    </button>
+                    <div id="userDropdown" class="dropdown hidden">
+                        <a onclick="profileManager.viewProfile()">📋 My Profile</a>
+                        <a onclick="authManager.handleLogout()">🚪 Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <!-- LEFT SIDE: RESTAURANTS & MENU -->
+        <div class="left-panel">
+            <!-- RESTAURANTS LISTING -->
+            <section class="restaurants-section">
+                <h2>Restaurants</h2>
+                <div id="restaurantList" class="restaurant-grid"></div>
+            </section>
+        </div>
+        <!-- RIGHT SIDE: CART -->
+        <aside class="right-panel cart-hidden" id="cartPanel">
+            <div class="cart-panel">
+                <h3>🛒 Your Cart</h3>
+                <!-- Empty Cart Message -->
+                <div id="emptyCart" class="empty-cart-msg">
+                    <p>Your cart is empty</p>
+                    <small>Add items to get started</small>
+                </div>
+                <!-- Cart Items -->
+                <div id="cartItemsList" class="cart-items hidden"></div>
+                <!-- Cart Summary -->
+                <div id="cartSummary" class="cart-summary hidden">
+                    <div class="summary-line">
+                        <span>Subtotal:</span>
+                        <span>₹<span id="subtotalAmount">0</span></span>
+                    </div>
+                    <div class="summary-line">
+                        <span>GST(govt.taxes):</span>
+                        <span>₹<span id="gstAmount">0</span></span>
+                    </div>
+                    <div class="summary-line">
+                        <span>Delivery Fee:</span>
+                        <span>₹<span id="deliveryFeeAmount">40</span></span>
+                    </div>
+                    <div class="summary-line total">
+                        <span>Total:</span>
+                        <span>₹<span id="totalAmount">0</span></span>
+                    </div>
+                    <button class="checkout-btn" onclick="orderSimulationManager.proceedToCheckout()">
+                        Proceed to Checkout
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </main>
+    <!-- MENU MODAL -->
+    <div id="menuModal" class="modal hidden">
+        <div class="modal-overlay" onclick="menuViewManager.closeMenu()"></div>
+        <div class="modal-content">
+            <!-- Menu Header -->
+            <div class="modal-header">
+                <button class="close-btn" onclick="menuViewManager.closeMenu()">✕</button>
+                <div id="menuRestaurantInfo" class="restaurant-header-info"></div>
+                <!-- Veg/Non-Veg Filter -->
+                <div class="menu-filter-section">
+                    <button class="menu-filter-btn active" id="filterAll" onclick="menuViewManager.filterMenuItems('all')">All</button>
+                    <button class="menu-filter-btn" id="filterVeg" onclick="menuViewManager.filterMenuItems('veg')">🟢 Veg</button>
+                    <button class="menu-filter-btn" id="filterNonVeg" onclick="menuViewManager.filterMenuItems('non-veg')">🔴 Non-Veg</button>
+                </div>
+            </div>
+            <!-- Menu Items -->
+            <div id="menuItemsList" class="menu-items-container"></div>
+        </div>
+    </div>
+    <!-- ORDER CONFIRMATION MODAL -->
+    <div id="orderModal" class="modal hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content order-confirmation">
+            <div class="success-icon">✅</div>
+            <h2>Order Placed Successfully!</h2>
+            <p>Your food is on the way 🚀</p>
+            <div class="order-details">
+                <p><strong>Order ID:</strong> <span id="orderId">#123456</span></p>
+                <p><strong>Estimated Delivery:</strong> 35-45 minutes</p>
+            </div>
+            <div class="order-actions">
+                <button onclick="orderSimulationManager.downloadBill()" class="download-btn">📥 Download Invoice</button>
+                <button onclick="orderSimulationManager.closeOrderModal()" class="ok-btn">Back to Home</button>
+            </div>
+        </div>
+    </div>
+    <!-- INVOICE TEMPLATE (Hidden) -->
+    <div id="invoiceTemplate" class="hidden">
+        <div id="invoiceContent" style="padding: 20px; background: white; font-family: Arial, sans-serif;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="margin: 0; color: #e84a3f;">FOOD EXPRESS</h1>
+                <p style="margin: 5px 0; color: #666;">Food Delivery Invoice</p>
+            </div>
+            <div style="border-top: 2px solid #e84a3f; border-bottom: 2px solid #e84a3f; padding: 15px 0; margin-bottom: 20px;">
+                <table style="width: 100%; font-size: 13px;">
+                    <tr>
+                        <td><strong>Order ID:</strong> <span id="inv-orderId">#123456</span></td>
+                        <td style="text-align: right;"><strong>Date:</strong> <span id="inv-date"></span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Customer:</strong> <span id="inv-customer">Guest</span></td>
+                        <td style="text-align: right;"><strong>Phone:</strong> <span id="inv-phone">-</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><strong>Restaurant:</strong> <span id="inv-restaurant">Restaurant Name</span></td>
+                    </tr>
+                </table>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <h3 style="margin: 0 0 15px 0; color: #222; font-size: 14px;">ORDER ITEMS</h3>
+                <table style="width: 100%; font-size: 13px; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f5f5f5; border-bottom: 2px solid #ddd;">
+                            <th style="padding: 8px; text-align: left;">Item</th>
+                            <th style="padding: 8px; text-align: center;">Qty</th>
+                            <th style="padding: 8px; text-align: right;">Price</th>
+                            <th style="padding: 8px; text-align: right;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inv-items">
+                        <tr>
+                            <td colspan="4" style="padding: 10px; text-align: center; color: #999;">Items will appear here</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <table style="width: 100%; font-size: 13px;">
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 8px;"><strong>Subtotal:</strong></td>
+                        <td style="text-align: right; padding: 8px;">₹<span id="inv-subtotal">0</span></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 8px;"><strong>Delivery Fee:</strong></td>
+                        <td style="text-align: right; padding: 8px;">₹<span id="inv-delivery-fee">40</span></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 8px;"><strong>GST (18%):</strong></td>
+                        <td style="text-align: right; padding: 8px;">₹<span id="inv-gst">0</span></td>
+                    </tr>
+                    <tr id="inv-discount-row" style="border-bottom: 1px solid #eee; display: none;">
+                        <td style="padding: 8px;"><strong style="color: #2e7d32;" id="inv-discount-label">Discount (10%):</strong></td>
+                        <td style="text-align: right; padding: 8px; color: #2e7d32;">-₹<span id="inv-discount">0</span></td>
+                    </tr>
+                    <tr style="background: #e84a3f; color: white;">
+                        <td style="padding: 12px;"><strong>TOTAL AMOUNT:</strong></td>
+                        <td style="text-align: right; padding: 12px;"><strong>₹<span id="inv-total">0</span></strong></td>
+                    </tr>
+                </table>
+            </div>
+            <div style="background: #f0f0f0; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+                <p style="margin: 0; font-size: 12px;"><strong>Payment Method:</strong> <span id="inv-payment">Cash on Delivery</span></p>
+            </div>
+            <div style="text-align: center; border-top: 1px solid #ddd; padding-top: 15px;">
+               <p style="margin: 0; font-size: 12px; color: #999;">Thank you for ordering with Food Express!</p>
+               <p style="margin: 5px 0 0 0; font-size: 11px; color: #ccc;">www.foodexpress.com | Customer Support: 1800-FOODEXPRESS</p>
+            </div>
+        </div>
+    </div>
+    <!-- PAYMENT MODAL -->
+    <div id="paymentModal" class="modal hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content payment-modal">
+            <button class="close-btn" onclick="orderSimulationManager.closePaymentModal()">✕</button>
+            <h2>💳 Payment Summary</h2>
+            <div class="payment-summary">
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span>₹<span id="paySubtotal">0</span></span>
+                </div>
+                <div class="summary-row">
+                    <span>GST (18%):</span>
+                    <span>₹<span id="payGst">0</span></span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery Fee:</span>
+                    <span>₹40</span>
+                </div>
+                <div class="summary-row discount-row" id="discountRow" style="display:none;">
+                    <span id="discountLabel">Discount (10%):</span>
+                    <span class="discount-amount">-₹<span id="discountAmount">0</span></span>
+                </div>
+                <div class="summary-row total-row">
+                    <span>Total Amount:</span>
+                    <span>₹<span id="payTotal">0</span></span>
+                </div>
+            </div>
+            <div class="payment-methods">
+                <h3>Select Payment Method</h3>
+                <label class="payment-option">
+                    <input type="radio" name="paymentMethod" value="upi" checked onchange="orderSimulationManager.showPaymentOption('upi')">
+                    <span class="radio-custom"></span>
+                    <span class="method-name">📱 UPI</span>
+                </label>
+                <label class="payment-option">
+                    <input type="radio" name="paymentMethod" value="cash" onchange="orderSimulationManager.showPaymentOption('cash')">
+                    <span class="radio-custom"></span>
+                    <span class="method-name">💵 Cash on Delivery</span>
+                </label>
+            </div>
+            <!-- UPI QR Modal -->
+<div id="upiQrModal" class="payment-detail-modal hidden">
+    <div class="payment-detail-header">
+        <span>📱 UPI Payment</span>
+    </div>
+    <div class="qr-container">
+        <canvas id="qrCanvas" width="200" height="200"></canvas>
+    </div>
+    <p class="qr-text">Scan QR code with any UPI app</p>
+</div>
+<!-- Pay Button OUTSIDE QR -->
+<button class="pay-btn" onclick="orderSimulationManager.processPayment()">Pay Now</button>
+</div> 
+</div> 
+</div>
+
+<!-- PROFILE MODAL -->
+<div id="profileModal" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content profile-modal">
+        <button class="close-btn" onclick="profileManager.closeProfile()">✕</button>
+        <h2>👤 My Profile</h2>
+        
+        <!-- User Info Section -->
+        <div class="profile-section">
+            <h3>User Information</h3>
+            <div class="user-info">
+                <p><strong>Name:</strong> <span id="profileName"></span></p>
+                <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+                <p><strong>Phone:</strong> <span id="profilePhone"></span></p>
+            </div>
+        </div>
+        
+        <!-- Order History Section -->
+        <div class="profile-section">
+            <h3>📋 Order History</h3>
+            <div id="orderHistory" class="order-history">
+                <!-- Orders will be populated here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- RATING CANVAS MODAL -->
+<div id="ratingModal" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content rating-modal">
+        <button class="close-btn" onclick="ratingManager.closeRatingModal()">✕</button>
+        <h2>🎨 Rate Your Food Experience</h2>
+        <p id="ratingOrderInfo">Order #<span id="ratingOrderId"></span></p>
+        
+        <div class="rating-canvas-container">
+            <canvas id="ratingCanvas" width="400" height="300"></canvas>
+            <div class="canvas-controls">
+                <button onclick="ratingManager.clearCanvas()">🗑️ Clear</button>
+                <button onclick="ratingManager.changeColor('black')">⚫ Black</button>
+                <button onclick="ratingManager.changeColor('red')">🔴 Red</button>
+                <button onclick="ratingManager.changeColor('blue')">🔵 Blue</button>
+                <button onclick="ratingManager.changeColor('green')">🟢 Green</button>
+            </div>
+        </div>
+        
+        <div class="rating-actions">
+            <button class="submit-rating-btn" onclick="ratingManager.submitRating()">Submit Rating</button>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+
+ 
